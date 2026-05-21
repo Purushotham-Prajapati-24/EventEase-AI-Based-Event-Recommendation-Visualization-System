@@ -157,6 +157,8 @@ Beyond discovery, EventEase delivers a fully featured social hub with:
 ### 🎨 Premium UI/UX
 - **Glassmorphism Design** — Frosted glass cards with backdrop-blur throughout
 - **Framer Motion** — Page transitions, list animations, and micro-interactions
+- **Universal Skeleton Loaders** — Page-specific shimmer placeholders for Dashboard, Discovery, Event Details, Profile, Chat, and Organizer Dashboard
+- **Reusable Skeleton Primitive** — Shared Tailwind `Skeleton` component for consistent loading states across the app
 - **Dark/Light Mode** — System-aware theme toggle
 - **Responsive Layout** — Mobile-first architecture scaling from 375px to 4K
 - **Interest Onboarding** — Multi-step interest curation wizard post-registration
@@ -166,6 +168,8 @@ Beyond discovery, EventEase delivers a fully featured social hub with:
 - **Refresh Promise Lock** — Prevents concurrent token refresh races during network instability
 - **XSS Protected** — Refresh tokens never exposed to client-side JavaScript
 - **CORS Hardened** — Origin-reflection with dynamic allowlist for multi-domain deployments
+- **Sanitized Error Handling** — Central Express error middleware hides stack traces and raw system details in production
+- **BOLA/IDOR Protection** — Ownership checks guard profile edits, organizer event actions, and chat participant access
 - **bcryptjs Password Hashing** — Industry-standard salt+hash for all credentials
 
 ---
@@ -389,6 +393,8 @@ Refresh Token Expired → Redirect to /login
 | **XSS Prevention** | Refresh token in `HttpOnly` cookie — never accessible to JS |
 | **CSRF Mitigation** | `SameSite=None; Secure` cookies + Bearer token double-submit |
 | **Race Condition Fix** | Refresh Promise Lock prevents duplicate refresh requests |
+| **Central Error Sanitization** | Global Express error handler logs full errors server-side and masks details in production |
+| **Authorization Boundaries** | Controller-level ownership checks prevent cross-user profile, event, and chat access |
 | **Password Security** | bcryptjs with salt rounds = 12 |
 | **CORS Policy** | Dynamic origin reflection with strict credential support |
 | **API Key Failover** | Automatic switch to fallback Groq key on HTTP 429 |
@@ -425,7 +431,7 @@ EEventEase/
 │       │   ├── events/         # Event cards, AI visualization
 │       │   ├── organizer/      # Event form, attendee manager
 │       │   ├── chat/           # Chat UI components
-│       │   └── ui/             # shadcn/ui base components
+│       │   └── ui/             # shadcn/ui base components and skeleton loaders
 │       ├── pages/              # 11 application pages
 │       │   ├── Home.tsx
 │       │   ├── Discovery.tsx   # AI event discovery
@@ -444,7 +450,7 @@ EEventEase/
 │       ├── controllers/        # 6 route controllers
 │       ├── routes/             # 7 Express router modules
 │       ├── models/             # 5 Mongoose schemas
-│       ├── middleware/         # Auth, upload middleware
+│       ├── middleware/         # Auth, upload, and global error middleware
 │       └── index.ts            # Server entry point
 │
 ├── docs/
